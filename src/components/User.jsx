@@ -8,6 +8,7 @@ import {
 } from "react-icons/fi";
 import jwt from "jwt-simple";
 import axios from "axios";
+import pathToRegexp from "path-to-regexp";
 
 // Actions
 import { heightsOf, user } from "../actions/index";
@@ -20,7 +21,8 @@ class User extends Component {
     super(props);
     this.state = {
       render: "login",
-      user: {}
+      user: {},
+      redirect: false
     }
     this.renderLogin = this.renderLogin.bind(this);
     this.renderSignup = this.renderSignup.bind(this);
@@ -33,19 +35,30 @@ class User extends Component {
     this.renderUser = this.renderUser.bind(this);
   }
 
-  componentWillMount() {
-    this.props.dispatch(heightsOf({dynamic: true}));            
-    const pathname = this.props.cURL.split(/\//);
-    if(pathname.length === 2 && this.props.user.isLoggedIn){
-      return <Redirect to={`/users/${this.props.user.id}`}/>
-    } else if(!this.props.user.isLoggedIn) {
-      this.setState({render: "login"});
-    } else if(pathname.length === 3 && this.props.user.kind === "admin"){
-      this.setState({render: "admin"});
-    } else if(pathname.length === 3 && this.props.user.kind === "designer"){
-      this.setState({render: "designer"});
-    } else if(pathname.length === 3 && this.props.user.kind === "user"){
-      this.setState({render: "user"});
+  async componentWillMount() {
+    this.props.dispatch(heightsOf({dynamic: true})); 
+
+    const { currentPath } = this.props;
+    const templatePath = pathToRegexp("/users/:id?");
+    const pathId = parseInt(templatePath.exec(currentPath)[1]);
+
+    const { isLoggedIn, authToken } = this.props.user;
+    if(isLoggedIn){
+      const id = jwt.decode(authToken, API.secretKey).user_id;
+      if(id === pathId) {
+        const res = await axios.get(`${API.users}${id}`, { headers: { Authorization: authToken } });
+        this.setState({render: res.data.kind});
+      } else if(!pathId && !this.state){
+        this.setState({redirect: true});
+      } else {
+        this.setState({render: "profile"});
+      }
+    } else {
+      if(pathId){
+        this.setState({render: "profile"});
+      } else {
+        this.setState({render: "login"});
+      }
     }
   }
 
@@ -70,10 +83,9 @@ class User extends Component {
           this.props.dispatch(user({authToken: authToken, isLoggedIn: true}));
           this.props.cookies.set('authToken', res.data.token, { path: '/' });
           const userId = jwt.decode(authToken, API.secretKey).user_id;
-          const resp = await axios.get(`${API.users}${userId}`, { headers: { Authorization: authToken } })
+          const resp = await axios.get(`${API.users}${userId}`, { headers: { Authorization: authToken } });
           this.setState({user: {}, render: resp.data.kind});
       }} catch(err) {
-        console.log(err);
         alert(err.response.data.error);
         this.setState({user: {}});
       } 
@@ -136,11 +148,10 @@ class User extends Component {
       const body = {data: jwt.encode(this.state.user, API.secretKey)};
       const res = await axios.post(`${API.users}`, body);
       if(res.status === 200) {
-        this.props.dispatch(user({...res.data, isLoggedIn: true}));
+        const authToken = res.data.token
+        this.props.dispatch(user({authToken: authToken, isLoggedIn: true}));
         this.props.cookies.set('authToken', res.data.token, { path: '/' });
-        const userId = jwt.decode(res.data.token, API.secretKey).user_id;
-        const resp = await axios.get(`${API.users}${userId}`)
-        this.setState({user: {}, render: resp.data.kind});
+        this.setState({redirect: true});
       } else if(res.status === 201) {
         alert(res.data.error);
         this.setState({render: "login", user: {}});
@@ -195,19 +206,45 @@ class User extends Component {
     );
   }
 
-  renderAdmin(){
-
+  renderAdmin() {
+    return(
+      <div>
+        admin
+      </div>
+    );
   }
 
   renderDesigner(){
+    return(
+      <div>
+        designer
+      </div>
+    );
+  }
 
+  renderProfile() {
+    return(
+      <div>
+        profile
+      </div>
+    )
   }
 
   renderUser(){
-
+    return(
+      <div>
+        user
+      </div>
+    );
   }
 
   render() {
+    if(this.state.redirect){
+      const { authToken } = this.props.user;
+      const id = jwt.decode(authToken, API.secretKey).user_id;
+      this.setState({render: false})
+      return <Redirect from={this.props.currentPath} to={`/users/${id}`} />;
+    }
     switch(this.state.render){
       case "login":
         return this.renderLogin();
@@ -219,6 +256,8 @@ class User extends Component {
         return this.renderDesigner();
       case "user":
         return this.renderUser();
+      case "profile":
+        return this.renderProfile();
       default:
         return this.renderLogin();
     };
@@ -227,7 +266,7 @@ class User extends Component {
 
 const mapStateToProps = state => {
   return {
-    cURL: state.router.location.pathname,
+    currentPath: state.router.location.pathname,
     user: state.user
   };
 } 

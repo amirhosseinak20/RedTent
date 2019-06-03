@@ -26,7 +26,7 @@ class App extends Component {
     const authToken = cookies.get("authToken");
     if(authToken !== undefined){
       const authUser = jwt.decode(authToken, secretKey)
-      authUser.id !== undefined ? dispatch(user({isLoggedIn: false})) : dispatch(user({isLoggedIn: true, token: authToken}));
+      authUser.id !== undefined ? dispatch(user({isLoggedIn: false})) : dispatch(user({isLoggedIn: true, authToken: authToken}));
     }
   }
   componentDidUpdate() {
