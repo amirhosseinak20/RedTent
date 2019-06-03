@@ -43,7 +43,7 @@ class Header extends Component {
               ref={ header => this.header = header }
               style={ headerStyle }>
         <nav style={ headerNavStyle }>
-          <Link to="/signin"><FiUser /></Link>
+          <Link to="/users"><FiUser /></Link>
           <Link to="/feed"><FiBox /></Link>
           <Link to="/search"><FiSearch /></Link>
         </nav>

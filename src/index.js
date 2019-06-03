@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
+import { CookiesProvider } from 'react-cookie';
 
 // components
 import App from "./components/index";
@@ -19,10 +20,12 @@ import './assets/stylesheets/index.css';
 const store = configureStore();
 
 ReactDOM.render(
-  <Provider store={ store }>
-    <ConnectedRouter history={ history }>
-      <App />
-    </ConnectedRouter>
-  </Provider>,
+  <CookiesProvider>
+    <Provider store={ store }>
+      <ConnectedRouter history={ history }>
+        <App />
+      </ConnectedRouter>
+    </Provider>
+  </CookiesProvider>,
   document.querySelector("#root")
 );

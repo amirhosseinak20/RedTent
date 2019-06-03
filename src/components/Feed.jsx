@@ -1,6 +1,7 @@
 // Modules
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from "react-router-dom";
 
 // Components
 import Design from './Design';
@@ -21,7 +22,9 @@ class Feed extends Component {
   }
 
   async componentWillMount() {
-    await this.props.dispatch(feed(0, 10));
+    if(this.props.user.isLoggedIn) {
+      await this.props.dispatch(feed(0, 10));
+    }
   }
 
   eachDesign(design, i) {
@@ -47,6 +50,9 @@ class Feed extends Component {
       height: "calc(100% - 20px)",
       padding: 10
     }
+    if(!this.props.user.isLoggedIn){
+      return <Redirect to="/users" />;
+    }
     return(
       <div className="feed-wrapper"
            style={ feedStyle }>
@@ -62,7 +68,8 @@ class Feed extends Component {
 const mapStateToProps = state => {
   return {
     designs: state.designs.list,
-    heightsOf: state.heightsOf
+    heightsOf: state.heightsOf,
+    user: state.user
   };
 } 
 export default connect(mapStateToProps)(Feed);

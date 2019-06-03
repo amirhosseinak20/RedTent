@@ -64,16 +64,16 @@ class User extends Component {
     } else if(this.state.render === "login" && !this.props.user.isLoggedIn){
       const body = {data: jwt.encode(this.state.user, API.secretKey)};
       try {
-      const res = await axios.post(`${API.users}signin/`, body);
-      if(res.status === 200){
-        console.log("123");
-        this.props.dispatch(user({...res.data, isLoggedIn: true}));
-        const userId = jwt.decode(res.data.token, API.secretKey).user_id;
-        console.log(userId);
-        const resp = await axios.get(`${API.users}${userId}`)
-        console.log(resp)
-        this.setState({user: {}, render: resp.data.kind});
+        const res = await axios.post(`${API.users}signin/`, body);
+        if(res.status === 200){
+          const authToken = res.data.token
+          this.props.dispatch(user({authToken: authToken, isLoggedIn: true}));
+          this.props.cookies.set('authToken', res.data.token, { path: '/' });
+          const userId = jwt.decode(authToken, API.secretKey).user_id;
+          const resp = await axios.get(`${API.users}${userId}`, { headers: { Authorization: authToken } })
+          this.setState({user: {}, render: resp.data.kind});
       }} catch(err) {
+        console.log(err);
         alert(err.response.data.error);
         this.setState({user: {}});
       } 
@@ -137,6 +137,10 @@ class User extends Component {
       const res = await axios.post(`${API.users}`, body);
       if(res.status === 200) {
         this.props.dispatch(user({...res.data, isLoggedIn: true}));
+        this.props.cookies.set('authToken', res.data.token, { path: '/' });
+        const userId = jwt.decode(res.data.token, API.secretKey).user_id;
+        const resp = await axios.get(`${API.users}${userId}`)
+        this.setState({user: {}, render: resp.data.kind});
       } else if(res.status === 201) {
         alert(res.data.error);
         this.setState({render: "login", user: {}});
@@ -213,6 +217,8 @@ class User extends Component {
         return this.renderAdmin();
       case "designer":
         return this.renderDesigner();
+      case "user":
+        return this.renderUser();
       default:
         return this.renderLogin();
     };

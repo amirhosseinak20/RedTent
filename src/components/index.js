@@ -2,6 +2,8 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
+import { withCookies } from 'react-cookie';
+import jwt from "jwt-simple";
 
 // Components
 import Header from "./Header";
@@ -12,9 +14,21 @@ import Error from "./Error";
 import User from "./User";
 
 // Actions
-import { heightsOf } from "../actions/index";
+import { heightsOf, user } from "../actions/index";
+
+// Constants
+import { secretKey } from "../constants/API";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    const { dispatch, cookies } = this.props;
+    const authToken = cookies.get("authToken");
+    if(authToken !== undefined){
+      const authUser = jwt.decode(authToken, secretKey)
+      authUser.id !== undefined ? dispatch(user({isLoggedIn: false})) : dispatch(user({isLoggedIn: true, token: authToken}));
+    }
+  }
   componentDidUpdate() {
     if(
       this.props.heightsOf.header !== 0 
@@ -58,7 +72,8 @@ class App extends Component {
             <Route sensitive exact path="/feed" component={ Feed } />
             <Route sensitive exact path="/designs/:id"
                    render={ () => <Design render="design" /> } />
-            <Route sensitive exact path="/users/:direction(|:id)" component={ User }/>
+            <Route sensitive exact path="/users/:id?"
+                   render={ () => <User cookies={this.props.cookies} /> }/>
             <Route component={ Error } />
           </Switch>
         </div>
@@ -68,9 +83,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    heightsOf: state.heightsOf
+    heightsOf: state.heightsOf,
+    coockies: ownProps.coockies
   };
 } 
-export default connect(mapStateToProps)(App);
+export default withCookies(connect(mapStateToProps)(App));
