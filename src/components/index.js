@@ -11,7 +11,9 @@ import Footer from "./Footer";
 import Feed from "./Feed";
 import Design from "./Design";
 import Error from "./Error";
-import User from "./User";
+import User from "./users/User";
+import Login from "./users/Login";
+import Signup from "./users/Signup";
 
 // Actions
 import { heightsOf, user } from "../actions/index";
@@ -72,6 +74,10 @@ class App extends Component {
             <Route sensitive exact path="/feed" component={ Feed } />
             <Route sensitive exact path="/designs/:id"
                    render={ () => <Design render="design" /> } />
+            <Route sensitive exact path="/users/login"
+                   render={ () => <Login cookies={this.props.cookies} /> } />
+            <Route sensitive exact path="/users/signup"
+                   render={ () => <Signup cookies={this.props.cookies} /> }/>
             <Route sensitive exact path="/users/:id?"
                    render={ () => <User cookies={this.props.cookies} /> }/>
             <Route component={ Error } />
@@ -86,7 +92,7 @@ class App extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     heightsOf: state.heightsOf,
-    coockies: ownProps.coockies
+    cookies: ownProps.cookies
   };
 } 
 export default withCookies(connect(mapStateToProps)(App));
