@@ -1,0 +1,33 @@
+@import url('./reset.css');
+@import url('./tanha_font.css');
+
+
+.header-wrapper nav a {
+  padding: 0 5px;
+  border-left: #001011 solid 1px;
+}
+.header-wrapper nav a:first-child {
+  border-right: #001011 solid 1px;
+}
+.header-wrapper nav a:hover {
+  background-color: #a5aa7e;
+}
+@media screen and (max-height: 425px){
+  .design-wrapper {
+    font-size: 8px;
+  }
+}
+@media screen and (min-height: 426px) {
+  .design-wrapper {
+    font-size: 12px;
+  }
+}
+@media screen and (min-height: 551px){
+  .design-wrapper {
+    font-size: 16px;
+  }
+}
+
+.limiter {
+  direction: ltr;
+}

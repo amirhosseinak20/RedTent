@@ -1,0 +1,8 @@
+@font-face {
+  font-family: Tanha;
+  src: url('../fonts/tanha-font/Tanha.eot');
+  src: url('../fonts/tanha-font/Tanha.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/tanha-font/Tanha.woff') format('woff'),
+       url('../fonts/tanha-font/Tanha.ttf') format('truetype');
+  font-weight: normal;
+}
