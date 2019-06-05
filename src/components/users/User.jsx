@@ -9,30 +9,18 @@ class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // redirect: false
     };
   }
   
   componentWillMount() {
-    // const { isLoggedIn } = this.props.user
-    // if(isLoggedIn){
-    //   this.setState({redirect: false});
-    //  } else {
-    //   this.setState({redirect: true, redirectURL: `/users/login`});
-    // }
   }
 
   render() {
-    // const { redirect, redirectURL } = this.state;
-    // if(redirect) {
-    //   return <Redirect to={redirectURL} />;
-    // } else {
-      return(
-        <div>
+    return(
+      <div>
 
-        </div>
-      );
-    // }
+      </div>
+    );
   }
 }
 

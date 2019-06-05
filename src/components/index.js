@@ -67,7 +67,7 @@ class App extends Component {
     return(
       <div className="app-root"
            style={ appRootStyle }>
-        <Header />
+        {/* <Header /> */}
         <div style={ mainStyle }
              className="main-wrapper">
           <Switch>
@@ -83,7 +83,7 @@ class App extends Component {
             <Route component={ Error } />
           </Switch>
         </div>
-        <Footer />        
+        {/* <Footer />         */}
       </div>
     );
   }
