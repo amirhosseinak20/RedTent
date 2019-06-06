@@ -2,6 +2,12 @@
 @import url('./tanha_font.css');
 
 /* General Styles */
+* , *:before, *:after{ 
+  box-sizing:border-box; 
+  -moz-box-sizing:border-box; 
+  -webkit-box-sizing:border-box; 
+  -ms-box-sizing:border-box;
+}
 body {
   background-color: #ffffff;
   color: #000000;
@@ -195,4 +201,137 @@ a:hover {
 .form-wrapper button:hover {
   background-color: #ffffff;
   color: #000000;
+}
+
+/* User Page */
+/* User Header */
+.user-header-wrapper {
+  opacity: 0.99;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+}
+.user-header-wallpaper {
+  background-repeat: no-repeat;
+  background-position: top;
+  background-attachment: fixed;
+  background-size: auto;
+  width: 100%;
+  height: 300px;
+  z-index: 15;
+  border-bottom: 0.8px solid #000000;
+}
+.user-avatar-wrapper {
+  position: absolute;
+  display: block;
+  top: 300px;
+  right: 10%;
+  width: 150px;
+  transform: translate(0, -65%);
+  height: 150px;
+  overflow: hidden;
+  border: 0.8px solid #000000;
+  border-radius: 50%;
+  padding: 10px;
+  z-index: 20;
+  background-color: #ffffff;
+}
+.user-avatar-wrapper img{
+  width: 100%;
+}
+.user-info-wrapper {
+  width: 100%;
+  padding-top: calc(0.35 * 200px);
+}
+.user-info {
+  /* width: 100%; */
+  direction: rtl;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: baseline;
+  align-items: flex-start;
+  padding: 0 10% 16px 0;
+  border-bottom: 0.8px solid #000000;
+  font-size: 24px;
+}
+.user-info .username {
+  margin: 0 4px 0 16px;
+  direction: ltr;
+}
+.user-info .full-name {
+  margin: 0 4px 0 16px;
+}
+.user-info .edit {
+  margin: 0 4px 0 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.user-info .edit:hover {
+  border-bottom: 0.8px solid #000000;
+}
+/* User Panel */
+.user-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.use-likdes {
+  transition: all 0.5s;
+}
+.tab {
+  width: 100%;
+  direction: rtl;
+  display: flex;
+  flex-direction: row;
+  justify-items: flex-start;
+  align-items: center;
+  border-bottom: 0.8px solid #000000;
+  font-size: 22px;
+  height: 60px;
+  cursor: pointer;
+}
+.plus-minus-icon {
+  width: 22px;
+  height: 22px;
+  position: relative;
+  margin: 0 16px;
+}
+.horizontal-line,
+.vertical-line {
+  top: 50%;
+  height: 2px;
+  width: 100%;
+  background-color: #000000;
+  transition: all 0.5s;
+  position: absolute;
+}
+.vertical-line {
+  transform: rotate(90deg);
+}
+.image-tab {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  padding: 0 16px;
+  width: 100%;
+  transition: all 0.5s;
+}
+@media screen and (max-width: 310px) {
+  .image-tab img {
+    flex-basis: 98%;
+  }
+}
+.image-tab img {
+  flex-basis: 300px;  
+  margin: 4px;
+  transition: all 0.5s;
+  transform-origin: top;
+  transform: scale(1);
+  z-index: 15;
 }

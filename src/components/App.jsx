@@ -11,6 +11,7 @@ import { user } from "../actions/index";
 import Header from  "./Header";
 import Signin from "./Signin";
 import Register from "./Register";
+import User from "./User";
 
 class App extends Component {
   constructor(props) {
@@ -32,8 +33,9 @@ class App extends Component {
       <div>
         <Header cookies={cookies}/>
         <Switch>
-          <Route path="/users/signin" render={() => <Signin cookies={cookies}/>}/>
-          <Route path="/users/register" render={() => <Register cookies={cookies}/>}/>
+          <Route path="/users/signin" render={() => <Signin cookies={cookies}/>} />
+          <Route path="/users/register" render={() => <Register cookies={cookies}/>} />
+          <Route path="/users/:username" render={() => <User cookies={cookies}/>} />
         </Switch>
       </div>
     );

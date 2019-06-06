@@ -40,7 +40,7 @@ class Signin extends Component {
             ...jwt.decode(userRes.data.data, secretKey),
             avatar: userRes.data.avatar,
             authKey 
-          };          
+          };
           dispatch(user({...userStatus, isSignedIn: true}));
           cookies.set('user', userStatus, {path: '/'});
           this.setState({redirect: true});
