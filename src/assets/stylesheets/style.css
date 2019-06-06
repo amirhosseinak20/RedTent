@@ -1,0 +1,198 @@
+/* Fonts */
+@import url('./tanha_font.css');
+
+/* General Styles */
+body {
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 16px;
+  font-family: 'Tanha', 'Times New Roman', Times, serif;
+}
+a {
+  color: inherit;
+  font-size: inherit;
+  display: inline-block;
+}
+a:hover {
+  text-decoration: none;
+}
+
+/* Header Styles */
+.header-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: inherit;
+  direction: ltr;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  position: relative;
+  border-bottom: 0.8px solid #000000;
+  z-index: 10;
+}
+.user-nav-wrapper {
+  margin: 8px;
+  padding: 4px 8px;
+  direction: rtl;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+}
+.user-nav-wrapper .signin-button, 
+.user-nav-wrapper .register-button,
+.user-nav-wrapper .signout-button {
+  margin: 0 4px;
+  padding: 4px 8px;
+  border: 0.8px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.user-nav-wrapper .signin-button:hover,
+.user-nav-wrapper .register-button:hover,
+.user-nav-wrapper .signout-button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+.user-nav-wrapper .user-avatar {
+  width: calc(16px * 3);
+  border: none;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+.user-nav-wrapper .user-avatar img {
+  width: 100%;
+}
+.logo-wrapper {
+  width: 80px;
+  background-color: #ffffff;
+  padding: 8px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 0.8px solid #000000;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 20;
+}
+.logo-wrapper img {
+  width: 100%;
+}
+.navigation-wrapper {
+  margin: 8px;
+  align-self: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.navigation-wrapper .icon-wrapper {
+  width: 32px;
+  height: 32px;
+  background-color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.bar-icon {
+  width: 100%;
+  height: 2px;
+  background-color: #000000;
+  transition: all 0.2s;
+}
+.navigation-wrapper .panel-wrapper {
+  position: absolute;
+  display: flex;
+  direction: rtl;
+  line-height: 20px;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #ffffff;
+  z-index: 15;
+  right: 0;
+  transition: 1s;
+  overflow: hidden;
+}
+.navigation-wrapper .panel-wrapper img {
+  height: 100%;
+}
+
+/* Signin & register Panel */
+.full-width-form-wrapper {
+  width: 100%;
+  height: 100vh;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.signin-form-wrapper,
+.register-form-wrapper {
+  min-width: 320px;
+  height: auto;
+  border: 0.8px solid #ffffff;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  direction: rtl;
+  padding: 8px 8px 32px 8px;
+}
+.signin-form-wrapper .logo,
+.register-form-wrapper .logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 8px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+.signin-form-wrapper .logo .lock-icon,
+.register-form-wrapper .logo .lock-icon {
+  width: 100%;
+  height: 100%;
+}
+.form-wrapper .username-wrapper,
+.form-wrapper .password-wrapper {
+  margin: 16px 0;
+}
+.form-wrapper .username-wrapper input,
+.form-wrapper .password-wrapper input {
+  background-color: inherit;
+  direction: ltr;
+  color: #ffffff;
+  border: none;
+  padding: 1px 4px;
+  border-bottom: 0.8px solid #ffffff;
+  min-width: 240px;
+  max-width: 320px;
+  line-height: 24px;
+  font-size: 20px;
+}
+.form-wrapper button {
+  border: 0.7px solid #ffffff;
+  background-color: inherit;
+  color: #ffffff;
+  transition: all 0.2s;
+  padding: 8px 16px;
+  font-size: 20px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.form-wrapper button:hover {
+  background-color: #ffffff;
+  color: #000000;
+}

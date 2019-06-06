@@ -44,7 +44,7 @@ const heightsOf = (
 
 const user = (
   state = {
-    isLoggedIn: false
+    isSignedIn: false
   }, 
   action) => {
     switch(action.type){
