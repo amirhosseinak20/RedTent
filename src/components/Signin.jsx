@@ -7,7 +7,10 @@ import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 // Constants
-import { secretKey, userSignin, users } from "../constants/API";
+import { secretKey, userSignin, users, media } from "../constants/API";
+
+// Images
+import avatar from "../assets/images/avatar.png";
 
 // Actions
 import { user } from "../actions/index";
@@ -33,14 +36,20 @@ class Signin extends Component {
       if(signinRes.status === 200){
         const authKey = signinRes.data.token;
         const headers = {Authorization: authKey};
-        const id = jwt.decode(authKey, secretKey).user_id;
+        const decodedAuth = jwt.decode(authKey, secretKey);        
+        const id = decodedAuth.user_id;
         const userRes = await axios.get(`${users}${id}`, {headers});
         if(userRes.status === 200){
           const userStatus = {
             ...jwt.decode(userRes.data.data, secretKey),
-            avatar: userRes.data.avatar,
-            authKey 
+            avatar: `${media}${userRes.data.avatar}`,
+            id: id,
+            designerId: decodedAuth.designer_id,
+            authKey
           };
+          if(userStatus.avatar === media) {
+            userStatus.avatar = avatar
+          }
           dispatch(user({...userStatus, isSignedIn: true}));
           cookies.set('user', userStatus, {path: '/'});
           this.setState({redirect: true});

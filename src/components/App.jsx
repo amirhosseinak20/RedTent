@@ -7,6 +7,9 @@ import { connect } from "react-redux";
 // Actions
 import { user } from "../actions/index";
 
+// Images
+import logo from "../assets/images/logo.png";
+
 // Components
 import Header from  "./Header";
 import Signin from "./Signin";
@@ -33,13 +36,32 @@ class App extends Component {
       <div>
         <Header cookies={cookies}/>
         <Switch>
-          <Route path="/users/signin" render={() => <Signin cookies={cookies}/>} />
-          <Route path="/users/register" render={() => <Register cookies={cookies}/>} />
-          <Route path="/users/:username" render={() => <User cookies={cookies}/>} />
+          <Route 
+            path="/users/signin" 
+            render={({match}) => <Signin cookies={cookies} match={match} />}
+          />
+          <Route 
+            path="/users/register" 
+            render={({match}) => <Register cookies={cookies}match={match} />} 
+          />
+          <Route 
+            path="/users/:username/:dId?" 
+            render={({match}) => <User cookies={cookies}match={match} />} 
+          />
+          <Route component={ErrorPanel} />
         </Switch>
       </div>
     );
   }
 }
 
+function ErrorPanel() {
+  return(
+    <div className="error-wrapper">
+      <div className="error-logo-wrapper"><img src={logo} alt="logo" /></div>
+      <span className="error">404</span>
+      <span className="error">صفحه‌ی مورد‌نظر یافت‌ نشد. </span>
+    </div>
+  );
+}
 export default withCookies(connect()(App));

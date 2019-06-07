@@ -5,10 +5,8 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // Constants
-// import { logo, navImage, avatar } from "../constants/API";
 import logo from "../assets/images/logo.png";
 import navImage from "../assets/images/navImage.jpg";
-import avatar from "../assets/images/avatar.png";
 
 // Actions
 import { user } from "../actions/index";
@@ -49,8 +47,7 @@ class UserNav extends Component {
   }
 
   render() {
-    const {signedIn, username} = this.props;
-    // const {avatar} = this.props;
+    const {signedIn, username, avatar} = this.props;
     if(signedIn){
       return (
         <nav className="user-nav-wrapper">

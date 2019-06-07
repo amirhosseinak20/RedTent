@@ -8,10 +8,9 @@ import jwt from "jwt-simple";
 
 // Images
 import wallpaper from "../assets/images/wallpaper.jpg";
-import avatar from "../assets/images/avatar.png";
 
 // Constatns 
-import { users, secretKey, media } from "../constants/API";
+import { users, secretKey, media, designs } from "../constants/API";
 
 //Components
 class User extends Component {
@@ -23,9 +22,8 @@ class User extends Component {
   }
 
   componentWillMount() {
-    const {url} = this.props;
     const {isSignedIn, username} = this.props.user;
-    const pageUsername = url.split(/\//).pop();
+    const pageUsername = this.props.match.params.username;
     if(isSignedIn && username === pageUsername){
       this.setState({redirect: false});
     } else if(isSignedIn) {
@@ -38,7 +36,7 @@ class User extends Component {
   render() {
     const {redirect} = this.state;
     const {user} = this.props;
-    const {avatar, username, firstname, lastname, isSignedIn} = user;
+    const {avatar, username, first_name, last_name, isSignedIn} = user;
     if(redirect || !isSignedIn){
       return <Redirect to="/users/signin" />
     } else {
@@ -46,13 +44,15 @@ class User extends Component {
         <div className="user-panel-wrapper">
           <UserHeader 
             username={username}
-            firstname={firstname}
-            lastname={lastname}
+            firstname={first_name}
+            lastname={last_name}
             avatar={avatar}
             wallpaper={wallpaper}
           />
           <div className="user-panel">
-            <UserLikeds user={user}/>
+            <UserLikeds user={user} />
+            <UserCollection user={user} />
+            <DesignerAbilities user={user} />
           </div>
         </div>
       );
@@ -65,7 +65,7 @@ class UserHeader extends Component {
     const headerImageStyle = {
       backgroundImage: `url(${wallpaper})`,
     };
-    const {username, firstname, lastname} = this.props;
+    const {username, firstname, lastname, avatar} = this.props;
     return(
       <div className="user-header-wrapper">
         <div 
@@ -104,24 +104,31 @@ class UserLikeds extends Component {
   async open() {
     const {user} = this.props;
     const {open} = this.state
-    const id = jwt.decode(user.authKey, secretKey).user_id;
-    this.setState({open: !open});
-    const config = {
-      headers: {Authorization: user.authKey}
-    };
-    try {
-    const likedsRes = await axios.get(`${users}${id}/rates_for_designs/`, config);
-    this.setState({images: likedsRes.data.designs});
-    } catch(error) {
-      console.log(error);
-      // pass
+    this.setState({open: !open, images: []});
+    if(!open) {
+      const id = jwt.decode(user.authKey, secretKey).user_id;
+      const config = {
+        headers: {Authorization: user.authKey}
+      };
+      try {
+        const likedsRes = await axios.get(`${users}${id}/rates_for_designs/`, config);
+        const images = [];
+        for(let i = 0; i < likedsRes.data.designs.length; i++){
+          const imageId = likedsRes.data.designs[i];
+          images.push((await axios.get(`${designs}${imageId}`)).data);
+        }
+        this.setState({images: images});
+      } catch(error) {
+        console.log(error);
+        // pass
+      }
     }
   }
 
   clicked(e) {
     const {scale} = this.state;
     if(!scale) {
-      e.target.style.transform = 'scale(3) translate(-25%, 0)';
+      e.target.style.transform = 'scale(2) translate(-25%, 0)';
       e.target.style.zIndex = 18;
       this.setState({scale: true});
     } else {
@@ -135,7 +142,7 @@ class UserLikeds extends Component {
   eachImage(image, i) {
     return(
       <img 
-        src={`${media}${image.path}`} 
+        src={`${media}${image.design_picture}`} 
         alt={image.title} 
         onClick={this.clicked} 
         key={i}
@@ -154,7 +161,8 @@ class UserLikeds extends Component {
     const imageTabStyle = {
       overflow: open ? 'initial' : 'hidden',
       height: open ? 'auto' : 0,
-      padding: open ? '16px 16px' : '0 16px' 
+      padding: open ? '16px 16px' : '0 16px',
+      borderBottom: open ? '0.8px solid #000000' : 'none'
     }
     return(
       <div className="user-likeds">
@@ -173,9 +181,196 @@ class UserLikeds extends Component {
   }
 }
 
+class UserCollection extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      scale: false,
+      images: []
+    }
+    this.open = this.open.bind(this);
+    this.clicked = this.clicked.bind(this);
+    this.eachImage = this.eachImage.bind(this);
+  }
+
+  async open() {
+    const {user} = this.props;
+    const {open} = this.state
+    this.setState({open: !open, images: []});
+    if(!open) {
+      const id = jwt.decode(user.authKey, secretKey).user_id;
+      const config = {
+        headers: {Authorization: user.authKey}
+      };
+      try {
+        // Fix this line
+        const likedsRes = await axios.get(`${users}${id}/rates_for_designs/`, config);
+        const images = [];
+        for(let i = 0; i < likedsRes.data.designs.length; i++){
+          const imageId = likedsRes.data.designs[i];
+          images.push((await axios.get(`${designs}${imageId}`)).data);
+        }
+        this.setState({images: images});
+      } catch(error) {
+        console.log(error);
+        // pass
+      }
+    }
+  }
+
+  clicked(e) {
+    const {scale} = this.state;
+    if(!scale) {
+      e.target.style.transform = 'scale(2) translate(-25%, 0)';
+      e.target.style.zIndex = 18;
+      this.setState({scale: true});
+    } else {
+      e.target.style.transform = 'scale(1)';
+      e.target.style.zIndex = 15;  
+      this.setState({scale: false});
+    }
+    console.log(e.target.style.transform);
+  }
+
+  eachImage(image, i) {
+    return(
+      <img 
+        src={`${media}${image.design_picture}`} 
+        alt={image.title} 
+        onClick={this.clicked} 
+        key={i}
+      />
+    );
+  }
+
+  render() {
+    const {open} = this.state
+    const horizontalLineStyle = {
+      transform: open ? 'rotate(180deg)' : 'rotate(0deg)'
+    }
+    const verticalLineStyle = {
+      transform: open ? 'rotate(0deg)' : 'rotate(90deg)'
+    }
+    const imageTabStyle = {
+      overflow: open ? 'initial' : 'hidden',
+      height: open ? 'auto' : 0,
+      padding: open ? '16px 16px' : '0 16px',
+      borderBottom: open ? '0.8px solid #000000' : 'none'
+    }
+    return(
+      <div className="user-collection">
+        <div className="tab" onClick={this.open}>
+          <div className="plus-minus-icon">
+            <div className="horizontal-line" style={horizontalLineStyle}></div>
+            <div className="vertical-line" style={verticalLineStyle}></div>
+          </div>
+          <div className="title">مجموعه‌ی شما</div>
+        </div>
+        <div className="image-tab" style={imageTabStyle}>
+          {this.state.images.map(this.eachImage)}
+        </div>
+      </div>
+    );
+  }
+}
+
+class DesignerAbilities extends Component {
+  // FIX This Component
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      scale: false,
+      images: []
+    }
+    this.open = this.open.bind(this);
+    this.clicked = this.clicked.bind(this);
+    this.eachImage = this.eachImage.bind(this);
+  }
+
+  async open() {
+    const {user} = this.props;
+    const {open} = this.state
+    this.setState({open: !open, images: []});
+    if(!open) {
+      const id = jwt.decode(user.authKey, secretKey).user_id;
+      const config = {
+        headers: {Authorization: user.authKey}
+      };
+      try {
+        const likedsRes = await axios.get(`${users}${id}/rates_for_designs/`, config);
+        const images = [];
+        for(let i = 0; i < likedsRes.data.designs.length; i++){
+          const imageId = likedsRes.data.designs[i];
+          images.push((await axios.get(`${designs}${imageId}`)).data);
+        }
+        this.setState({images: images});
+      } catch(error) {
+        console.log(error);
+        // pass
+      }
+    }
+  }
+
+  clicked(e) {
+    const {scale} = this.state;
+    if(!scale) {
+      e.target.style.transform = 'scale(2) translate(-25%, 0)';
+      e.target.style.zIndex = 18;
+      this.setState({scale: true});
+    } else {
+      e.target.style.transform = 'scale(1)';
+      e.target.style.zIndex = 15;  
+      this.setState({scale: false});
+    }
+    console.log(e.target.style.transform);
+  }
+
+  eachImage(image, i) {
+    return(
+      <img 
+        src={`${media}${image.design_picture}`} 
+        alt={image.title} 
+        onClick={this.clicked} 
+        key={i}
+      />
+    );
+  }
+
+  render() {
+    const {open} = this.state
+    const horizontalLineStyle = {
+      transform: open ? 'rotate(180deg)' : 'rotate(0deg)'
+    }
+    const verticalLineStyle = {
+      transform: open ? 'rotate(0deg)' : 'rotate(90deg)'
+    }
+    const imageTabStyle = {
+      overflow: open ? 'initial' : 'hidden',
+      height: open ? 'auto' : 0,
+      padding: open ? '16px 16px' : '0 16px',
+      borderBottom: open ? '0.8px solid #000000' : 'none'
+    }
+    return(
+      <div className="user-collection">
+        <div className="tab" onClick={this.open}>
+          <div className="plus-minus-icon">
+            <div className="horizontal-line" style={horizontalLineStyle}></div>
+            <div className="vertical-line" style={verticalLineStyle}></div>
+          </div>
+          <div className="title">توانایی‌ها</div>
+        </div>
+        <div className="image-tab" style={imageTabStyle}>
+          {this.state.images.map(this.eachImage)}
+        </div>
+      </div>
+    );
+  }
+}
+
 const mapStateToProps = state => {
   return {
-    url: state.router.location.pathname,
     user: state.user
   };
 };
