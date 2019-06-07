@@ -1,4 +1,5 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+webservice for this project was run on localhost:3005 if you want to use webservice with another url please change value of ./src/constants/API.js baseURL
 
 ## Available Scripts
 
@@ -66,3 +67,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+this was a project for university of isfahan
