@@ -6,7 +6,6 @@ import { Link, Redirect } from "react-router-dom";
 import { GiSewingNeedle } from "react-icons/gi";
 
 // Images
-import test from "../assets/images/test.jpg";
 
 // Components
 // Fix this component
@@ -15,17 +14,7 @@ class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      images: [
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-        {src: test, id: 1, rate: 3.5},
-      ],
+      images: [],
       redirect: false
     };
     this.eachImage = this.eachImage.bind(this);
