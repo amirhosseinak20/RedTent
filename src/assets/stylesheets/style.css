@@ -137,7 +137,8 @@ a:hover {
 /* Signin & register Panel */
 .full-width-form-wrapper {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 48px;
   background-color: #000000;
   color: #ffffff;
   display: flex;
@@ -158,7 +159,8 @@ a:hover {
   padding: 8px 8px 32px 8px;
 }
 .signin-form-wrapper .logo,
-.register-form-wrapper .logo {
+.register-form-wrapper .logo,
+.register-form-wrapper .avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -168,27 +170,44 @@ a:hover {
   margin-bottom: 32px;
   overflow: hidden;
 }
+.register-form-wrapper .avatar {
+  cursor: pointer;
+  width: 72px;
+  height: 72px;
+}
 .signin-form-wrapper .logo .lock-icon,
-.register-form-wrapper .logo .lock-icon {
+.register-form-wrapper .logo .lock-icon,
+.register-form-wrapper .avatar .avatar-img {
   width: 100%;
   height: 100%;
 }
 .form-wrapper .username-wrapper,
+.form-wrapper .firstname-wrapper,
+.form-wrapper .lastname-wrapper,
 .form-wrapper .password-wrapper {
   margin: 16px 0;
 }
 .form-wrapper .username-wrapper input,
+.form-wrapper .firstname-wrapper input,
+.form-wrapper .lastname-wrapper input,
 .form-wrapper .password-wrapper input {
   background-color: inherit;
   direction: ltr;
   color: #ffffff;
   border: none;
-  padding: 1px 4px;
+  padding: 8px 4px;
   border-bottom: 0.8px solid #ffffff;
   min-width: 240px;
   max-width: 320px;
   line-height: 24px;
   font-size: 20px;
+}
+.form-wrapper .username-wrapper input::placeholder,
+.form-wrapper .password-wrapper input::placeholder,
+.form-wrapper .firstname-wrapper input,
+.form-wrapper .lastname-wrapper input {
+  text-align: right;
+  direction: rtl;
 }
 .form-wrapper button {
   border: 0.7px solid #ffffff;

@@ -22,7 +22,8 @@ class Register extends Component {
     super(props);
     this.state = {
       redirect: false,
-      user: {}
+      user: {},
+      avatarImage: avatar
     };
     this.handleInput = this.handleInput.bind(this);
     this.register = this.register.bind(this);
@@ -67,6 +68,15 @@ class Register extends Component {
     }
   }
 
+  uploadAvatar(e) {
+    this.setState({avatarFile: e.target.files[0]});
+    const reader = new FileReader();
+    reader.onload = event => {
+      this.setState({avatarImage: event.target.result});
+    }
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
   handleInput(e, name) {
     this.setState({user: {...this.state.user, [name]: e.target.value}});
   }
@@ -79,27 +89,59 @@ class Register extends Component {
     const {isSignedIn, username} = this.props.user;
     const {redirect} = this.state;
     if(redirect || isSignedIn){
-      return <Redirect to={`/users/${username}`} />;
+      return <Redirect to="/feed" />;
     } else {
       return(
         <div className="full-width-form-wrapper">
           <div className="register-form-wrapper">
-            <div className="logo"><FiLock className="lock-icon" /></div>
+            {/* <div className="logo"><FiLock className="lock-icon" /></div> */}
+            <div className="avatar">
+              <img 
+                className="avatar-img"
+                src={this.state.avatarImage} 
+                alt="avatar"
+                onClick={() => this.inputFileElement.click()}
+              />
+              <input 
+                type="file" 
+                ref={input => this.inputFileElement = input}
+                onChange={this.uploadAvatar}
+                style={{display: "none"}} 
+              />
+            </div>
             <form className="form-wrapper" onSubmit={this.register}>
               <div className="username-wrapper">
                 <input 
                   type="text" 
                   name="username" 
-                  placeholder="User Name" 
+                  placeholder="نام‌کاربری" 
                   onChange={e => this.handleInput(e, "username")}
                   value={this.inputValue("username")}
+                />
+              </div>
+              <div className="firstname-wrapper">
+                <input 
+                  type="text" 
+                  name="firstname" 
+                  placeholder="نام" 
+                  onChange={e => this.handleInput(e, "firstname")}
+                  value={this.inputValue("firstname")}
+                />
+              </div>
+              <div className="lastname-wrapper">
+                <input 
+                  type="text" 
+                  name="username" 
+                  placeholder="نام‌خانوادگی" 
+                  onChange={e => this.handleInput(e, "lastname")}
+                  value={this.inputValue("lastname")}
                 />
               </div>
               <div className="password-wrapper">
                 <input 
                   type="password" 
                   name="password"
-                  placeholder="Password"
+                  placeholder="رمز‌عبور"
                   onChange={e => this.handleInput(e, "password")}
                   value={this.inputValue("password")}
                 />

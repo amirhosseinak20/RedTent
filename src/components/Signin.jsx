@@ -78,7 +78,7 @@ class Signin extends Component {
     const {isSignedIn, username} = this.props.user;
     const {redirect} = this.state;
     if(redirect || isSignedIn){
-      return <Redirect to={`/users/${username}`} />;
+      return <Redirect to="/feed" />;
     } else {
       return(
         <div className="full-width-form-wrapper">
@@ -89,7 +89,7 @@ class Signin extends Component {
                 <input 
                   type="text" 
                   name="username" 
-                  placeholder="User Name" 
+                  placeholder="نام‌کاربری" 
                   onChange={e => this.handleInput(e, "username")}
                   value={this.inputValue("username")}
                 />
@@ -98,7 +98,7 @@ class Signin extends Component {
                 <input 
                   type="password" 
                   name="password"
-                  placeholder="Password"
+                  placeholder="رمز‌عبور"
                   onChange={e => this.handleInput(e, "password")}
                   value={this.inputValue("password")}
                 />
