@@ -15,6 +15,7 @@ import Header from  "./Header";
 import Signin from "./Signin";
 import Register from "./Register";
 import User from "./User";
+import Designer from "./Designer";
 
 class App extends Component {
   constructor(props) {
@@ -44,9 +45,13 @@ class App extends Component {
             path="/users/register" 
             render={({match}) => <Register cookies={cookies}match={match} />} 
           />
-          <Route 
-            path="/users/:username/:dId?" 
+          <Route
+            path="/users/:username" 
             render={({match}) => <User cookies={cookies}match={match} />} 
+          />
+          <Route 
+            path="/designers/:designerId" 
+            render={({match}) => <Designer cookies={cookies}match={match} />} 
           />
           <Route component={ErrorPanel} />
         </Switch>

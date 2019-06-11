@@ -205,9 +205,10 @@ a:hover {
   color: #000000;
 }
 
-/* User Page */
-/* User Header */
-.user-header-wrapper {
+/* User and Designer Page */
+/* User and Designer Header */
+.user-header-wrapper,
+.designer-header-wrapper {
   opacity: 0.99;
   display: flex;
   flex-direction: column;
@@ -215,7 +216,8 @@ a:hover {
   align-items: flex-start;
   position: relative;
 }
-.user-header-wallpaper {
+.user-header-wallpaper,
+.designer-header-wallpaper {
   background-repeat: no-repeat;
   background-position: top;
   background-attachment: fixed;
@@ -225,7 +227,8 @@ a:hover {
   z-index: 15;
   border-bottom: 0.8px solid #000000;
 }
-.user-avatar-wrapper {
+.user-avatar-wrapper,
+.designer-avatar-wrapper {
   position: absolute;
   display: block;
   top: 300px;
@@ -240,10 +243,12 @@ a:hover {
   z-index: 20;
   background-color: #ffffff;
 }
-.user-avatar-wrapper img{
+.user-avatar-wrapper img,
+.designer-avatar-wrapper img {
   width: 100%;
 }
-.user-info-wrapper {
+.user-info-wrapper,
+.designer-info-wrapper {
   width: 100%;
   padding-top: calc(0.35 * 200px);
 }
@@ -259,29 +264,54 @@ a:hover {
   border-bottom: 0.8px solid #000000;
   font-size: 24px;
 }
+.designer-info {
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  justify-content: baseline;
+  align-items: flex-start;
+  padding: 0 10% 16px 0;
+  border-bottom: 0.8px solid #000000;
+  font-size: 24px;
+}
 .user-info .username {
   margin: 0 4px 0 16px;
   direction: ltr;
 }
-.user-info .full-name {
+.user-info .full-name,
+.designer-info .full-name,
+.designer-info .contact,
+.designer-info .description {
   margin: 0 4px 0 16px;
 }
-.user-info .edit {
+.designer-info .contact,
+.designer-info .description {
+  margin: 16px 0;
+}
+.user-info .edit,
+.designer-info .edit,
+.user-info .needle {
   margin: 0 4px 0 16px;
   cursor: pointer;
   transition: all 0.3s;
 }
-.user-info .edit:hover {
+.designer-info .edit {
+  margin: 16px 0 0 0;
+}
+.user-info .edit:hover,
+.designer-info .edit:hover,
+.user-info .needle:hover {
   border-bottom: 0.8px solid #000000;
 }
-/* User Panel */
+/* User and Designer Panel and Portfolio */
 .user-panel {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 .user-likdes,
-.user-collection {
+.user-collection,
+.designer-collection {
   transition: all 0.5s;
 }
 .tab {
