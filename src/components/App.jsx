@@ -1,7 +1,7 @@
 // Node Modules
 import React, { Component } from "react";
 import { withCookies } from "react-cookie";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 // Actions
@@ -18,6 +18,7 @@ import User from "./User";
 import Designer from "./Designer";
 import Feed from "./Feed";
 import Design from "./Design";
+import Search from "./Search";
 
 class App extends Component {
   constructor(props) {
@@ -57,7 +58,11 @@ class App extends Component {
           />
           <Route 
             path="/feed" 
-            render={({match}) => <Feed cookies={cookies}match={match} />} 
+            render={({match}) => <Feed cookies={cookies} match={match} />} 
+          />
+          <Route 
+            path="/search" 
+            render={({match}) => <Search cookies={cookies} match={match} />} 
           />
           <Route 
             path="/designs/:id" 
@@ -70,13 +75,18 @@ class App extends Component {
   }
 }
 
-function ErrorPanel() {
-  return(
-    <div className="error-wrapper">
-      <div className="error-logo-wrapper"><img src={logo} alt="logo" /></div>
-      <span className="error">404</span>
-      <span className="error">صفحه‌ی مورد‌نظر یافت‌ نشد. </span>
-    </div>
-  );
+function ErrorPanel(props) {
+  const {match} = props;
+  if(match.url === "/") {
+    return <Redirect to="/search" />
+  } else {
+    return(
+      <div className="error-wrapper">
+        <div className="error-logo-wrapper"><img src={logo} alt="logo" /></div>
+        <span className="error">404</span>
+        <span className="error">صفحه‌ی مورد‌نظر یافت‌ نشد. </span>
+      </div>
+    );
+  }
 }
 export default withCookies(connect()(App));

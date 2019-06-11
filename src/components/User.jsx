@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
-import { FiEdit3 }from "react-icons/fi";
+import { FiEdit3, FiPlus }from "react-icons/fi";
 import { GiSewingNeedle } from "react-icons/gi"
 import axios from "axios";
 import jwt from "jwt-simple";
@@ -57,6 +57,7 @@ class User extends Component {
             <UserLikeds user={user} />
             <UserCollection user={user} />
           </div>
+          <AddMore />
         </div>
       );
     }
@@ -274,6 +275,13 @@ class UserCollection extends Component {
   }
 }
 
+function AddMore() {
+  return(
+    <div className="add-more-fixed">
+      <Link className="button" to="/search"><FiPlus className="button" /></Link>
+    </div>
+  );
+}
 const mapStateToProps = state => {
   return {
     user: state.user
