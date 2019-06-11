@@ -16,6 +16,7 @@ import Signin from "./Signin";
 import Register from "./Register";
 import User from "./User";
 import Designer from "./Designer";
+import Feed from "./Feed";
 
 class App extends Component {
   constructor(props) {
@@ -52,6 +53,10 @@ class App extends Component {
           <Route 
             path="/designers/:designerId" 
             render={({match}) => <Designer cookies={cookies}match={match} />} 
+          />
+          <Route 
+            path="/feed" 
+            render={({match}) => <Feed cookies={cookies}match={match} />} 
           />
           <Route component={ErrorPanel} />
         </Switch>

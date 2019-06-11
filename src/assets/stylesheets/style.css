@@ -404,3 +404,124 @@ a:hover {
       transform: rotate(359deg);
   }
 }
+
+/* Feed Page */
+.feed-wrapper {
+  height: calc(100vh - 73px);
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  display: flex;
+  direction: ltr;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: inherit;
+  position: relative;
+  padding-top: 15px;
+  background-color: #FFCCCC;
+}
+.feed-wrapper::-webkit-scrollbar {
+  height: 8px;
+  background-color: #ffffff;
+}
+.feed-wrapper::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border-radius: 8px;
+}
+.feed-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.feed-wrapper::-webkit-scrollbar-track {
+  background-color: inherit;
+}
+.feed-wrapper .each-wrapper {
+  height: 100%;
+  margin: 0 8px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+.feed-wrapper .each-wrapper .image-wrapper {
+  height: 90%;
+  margin: 0 0 8px 0;  
+}
+.feed-wrapper .each-wrapper .image-wrapper img {
+  height: 100%;
+  width: auto;
+  border-radius: 16px;
+  border: 0.8px solid black;
+}
+.feed-wrapper .each-wrapper .function-buttons-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.add-to-collection {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: absolute;
+  top: 4px;
+  right: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.add-to-collection .button {
+  width: 100%;
+  height: 100%;
+}
+.like {
+  height: 20%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.like .heart {
+  min-width: 20px;
+  width: 100%;
+  max-width: 32px;
+  height: max-content;
+  margin-right: 2px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.like .heart:hover {
+  fill: red;
+}
+.like .avg-rate {
+  min-width: 20px;
+  margin-left: 4px;
+  border-bottom: 0.4px solid #000000;
+  text-align: center;
+}
+.download {
+  min-width: 20px;
+  margin: 0 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.download .button {
+  width: 100%;
+  height: 100%;
+}
+.download:hover,
+.add-to-collection:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border: 0.8px solid #000000;
+  border-radius: 50%;
+  padding: 4px;
+}
+@media screen and (min-height: 540px) {
+  .like .heart,
+  .download {
+    min-width: 32px;
+  }
+}
