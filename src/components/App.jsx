@@ -17,6 +17,7 @@ import Register from "./Register";
 import User from "./User";
 import Designer from "./Designer";
 import Feed from "./Feed";
+import Design from "./Design";
 
 class App extends Component {
   constructor(props) {
@@ -57,6 +58,10 @@ class App extends Component {
           <Route 
             path="/feed" 
             render={({match}) => <Feed cookies={cookies}match={match} />} 
+          />
+          <Route 
+            path="/designs/:id" 
+            render={({match}) => <Design cookies={cookies}match={match} />} 
           />
           <Route component={ErrorPanel} />
         </Switch>

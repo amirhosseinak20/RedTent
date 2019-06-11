@@ -7,7 +7,7 @@ import axios from "axios";
 
 // Images
 import wallpaper from "../assets/images/wallpaper_designer.jpg";
-import avatar from "../assets/images/avatar_designer.jpg";
+import avatar from "../assets/images/avatar_designer.png";
 
 // Constatns 
 import { media, designers } from "../constants/API";

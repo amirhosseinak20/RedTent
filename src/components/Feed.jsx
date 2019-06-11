@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FiShare, FiPlus, FiHeart, FiDownload } from "react-icons/fi";
 import { Link, Redirect } from "react-router-dom";
+import { GiSewingNeedle } from "react-icons/gi";
 
 // Images
 import test from "../assets/images/test.jpg";
@@ -14,9 +15,20 @@ class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      images: [],
+      images: [
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+        {src: test, id: 1, rate: 3.5},
+      ],
       redirect: false
-    }
+    };
+    this.eachImage = this.eachImage.bind(this);
   }
 
   // Fetch Images from Server and fix variables
@@ -30,19 +42,22 @@ class Feed extends Component {
   }
   
   eachImage(image, i) {
+    const {user} = this.props;
     return (
       <Image 
         id={image.id}
         src={image.src}
         avg={image.rate}
         rate={image.rate}
+        user={user}
       />
     );
   }
   
   render() {
     const {images, redirect} = this.state;
-    if(redirect) {
+    const {user} = this.props;
+    if(redirect || !user.isSignedIn) {
       return <Redirect to="/users/signin" />
     } else {
       return(
@@ -54,7 +69,7 @@ class Feed extends Component {
   }
 }
 
-function Image({id, src, avg, rate}) {
+function Image({id, src, avg, rate, user}) {
   return(
     <div className="each-wrapper">
       <Link className="image-wrapper" to={`/designs/${id}`}><img src={src} alt={src.split('/').pop()} /></Link>
@@ -62,7 +77,10 @@ function Image({id, src, avg, rate}) {
       <Add2Collection />
       <div className="function-buttons-wrapper">
         <Like avg={avg} rate={rate}/>
-        <Download href={src}/>
+        <div className="nd-wrapper">
+          <Download href={src}/>
+          {user.kind === "designer" ? <Needle /> : null}
+        </div>
       </div>
     </div>
   );
@@ -114,7 +132,15 @@ function Download ({href}) {
     </a>
   );
 }
-
+// FIX this component
+// add functionality
+function Needle() {
+  return(
+    <div className="needle">
+      <GiSewingNeedle className="button"/>
+    </div>
+  );
+}
 const mapStateToProps = state => {
   return {
     user: state.user

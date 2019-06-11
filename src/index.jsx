@@ -14,6 +14,10 @@ import "./assets/stylesheets/style.css";
 
 // Components
 import App from "./components/App";
+import Favicon from "react-favicon";
+
+// Images
+import logo from "./assets/images/logo.png";
 
 // Rendering VDOM
 const store = configureStore();
@@ -22,6 +26,7 @@ ReactDOM.render(
   <CookiesProvider>
     <Provider store={ store }>
       <ConnectedRouter history={ history }>
+        <Favicon url={logo} />
         <App />
       </ConnectedRouter>
     </Provider>

@@ -482,6 +482,7 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.2s;
 }
 .like .heart {
   min-width: 20px;
@@ -501,18 +502,22 @@ a:hover {
   border-bottom: 0.4px solid #000000;
   text-align: center;
 }
-.download {
+.download,
+.needle {
   min-width: 20px;
   margin: 0 8px;
   transition: all 0.2s;
   cursor: pointer;
 }
-.download .button {
+.download .button,
+.needle .button {
   width: 100%;
+  transition: all 0.2s;
   height: 100%;
 }
 .download:hover,
-.add-to-collection:hover {
+.add-to-collection:hover,
+.needle .button:hover {
   background-color: #000000;
   color: #ffffff;
   border: 0.8px solid #000000;
@@ -521,7 +526,15 @@ a:hover {
 }
 @media screen and (min-height: 540px) {
   .like .heart,
-  .download {
+  .download,
+  .needle {
     min-width: 32px;
   }
+}
+.nd-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
 }
