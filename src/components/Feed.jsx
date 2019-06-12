@@ -4,41 +4,85 @@ import { connect } from "react-redux";
 import { FiShare, FiPlus, FiHeart, FiDownload } from "react-icons/fi";
 import { Link, Redirect } from "react-router-dom";
 import { GiSewingNeedle } from "react-icons/gi";
+import axios from "axios";
+
+// Helpers
+import { getUnique, shuffle } from "../helpers/index";
+
+// Actions
+// import * as action from "../actions/index";
+
+// Constants
+import * as API from "../constants/API";
 
 // Images
 
 // Components
-// Fix this component
-// connect to api server
 class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
       images: [],
-      redirect: false
+      redirect: false,
+      fetched: false
     };
     this.eachImage = this.eachImage.bind(this);
+    this.fetchFeed = this.fetchFeed.bind(this);
   }
 
   // Fetch Images from Server and fix variables
-  componentWillMount() {
+  async componentWillMount() {
+    await this.fetchFeed(10);
+  }
+
+  async fetchFeed(n) {
     const {user} = this.props;
     if(user.isSignedIn) {
-      this.setState({redirect: false});
-    } else {
-      this.setState({redirect: true});
+      try {
+        const params = {
+          _from: 0,
+          _row: n
+        }
+        const headers = {Authorization: user.authKey};
+        const latest = await axios.get(API.latestDesigns, {params});
+        const popular = await axios.get(API.popularDesigns, {params});
+        const mostViewd = await axios.get(API.mostVisitedDesigns, {params});
+        const userFavs = await axios.get(
+          `${API.users}${user.id}/favorites`, 
+          {params, headers}
+        );
+        const designsCollection = await axios.get(API.designsCollection, {headers});
+        console.log(designsCollection);
+        this.setState({designsCollection: designsCollection.data});
+        if(latest.status === 500){
+          throw new Error(latest.data.error);
+        } else if(popular.status === 500) {
+          throw new Error(popular.data.error);
+        } else if(mostViewd.status === 500) {
+          throw new Error(mostViewd.data.error);
+        }
+        const uniq = getUnique([
+          ...latest.data,
+          ...popular.data, 
+          ...mostViewd.data,
+          ...userFavs.data
+        ]);
+        this.setState({images: shuffle(uniq)});
+      } catch (error) {
+        alert(error);
+      }
     }
   }
-  
+
   eachImage(image, i) {
     const {user} = this.props;
+    const {designsCollection} = this.state;
     return (
       <Image 
-        id={image.id}
-        src={image.src}
-        avg={image.rate}
-        rate={image.rate}
-        user={user}
+        id={image.id} 
+        user={user} 
+        key={image.id} 
+        designsCollection={designsCollection}
       />
     );
   }
@@ -58,21 +102,54 @@ class Feed extends Component {
   }
 }
 
-function Image({id, src, avg, rate, user}) {
-  return(
-    <div className="each-wrapper">
-      <Link className="image-wrapper" to={`/designs/${id}`}><img src={src} alt={src.split('/').pop()} /></Link>
-      <Share href={src}/>
-      <Add2Collection />
-      <div className="function-buttons-wrapper">
-        <Like avg={avg} rate={rate}/>
-        <div className="nd-wrapper">
-          <Download href={src}/>
-          {user.kind === "designer" ? <Needle /> : null}
+class Image extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+  }
+
+  async componentWillMount() {
+    try {
+      const {user, id} = this.props;
+      const headers = {Authorization: user.authKey};      
+      const design = await axios.get(`${API.designs}${id}`, {headers});
+      const userDeisgnRate = await axios.get(
+        `${API.designs}${id}/get_my_rate/`, 
+        {headers}
+      );
+      const image = {
+        id: design.data.id,
+        src: `${API.media}${design.data.design_picture}`,
+        avg: design.data.rate,
+        rate: userDeisgnRate.data
+      }
+      this.setState({...image});
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  render() {
+    const {user, designsCollection} = this.props;
+    const {id, src, avg, rate} = this.state;
+    return(
+      <div className="each-wrapper">
+        <Link className="image-wrapper" to={`/designs/${id}`}>
+          <img src={src} alt={src} />
+        </Link>
+        <Share href={src}/>
+        <Add2Collection user={user} dId={id} dscId={designsCollection[0].id}/>
+        <div className="function-buttons-wrapper">
+          <Like avg={avg} rate={rate}/>
+          <div className="nd-wrapper">
+            <Download href={src}/>
+            {user.kind === "designer" ? <Needle /> : null}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 // FIX this component
 // create circular menu
@@ -86,17 +163,35 @@ function Share({href}) {
     </div>
   );
 }
-// FIX this component
-// add functionality
-function Add2Collection() {
-  return(
-    <div className="add-to-collection" onClick={e => {
-      e.preventDefault();
-    }}>
-      <FiPlus className="button"/>
-    </div>
-  );
+
+class Add2Collection extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+    this.add = this.add.bind(this);
+  }
+  add() {
+    const {user, dId, dscId} = this.props;
+    try {
+      const headers = {Authorization: user.authKey};
+      const body = {
+        design_id: dId
+      }
+      axios.post(`${API.designsCollection}${dscId}/designs/`, body, {headers});
+    } catch (error) {
+      alert(error);
+    }
+  }
+  render() {
+    return(
+      <div className="add-to-collection" onClick={this.add}>
+        <FiPlus className="button"/>
+      </div>
+    );
+  }
 }
+
 // FIX this component
 // add functionality
 class Like extends Component {
@@ -114,6 +209,7 @@ class Like extends Component {
     );
   }
 }
+
 function Download ({href}) {
   return(
     <a href={href} className="download" download>
@@ -121,6 +217,7 @@ function Download ({href}) {
     </a>
   );
 }
+
 // FIX this component
 // add functionality
 function Needle() {
@@ -130,6 +227,7 @@ function Needle() {
     </div>
   );
 }
+
 const mapStateToProps = state => {
   return {
     user: state.user

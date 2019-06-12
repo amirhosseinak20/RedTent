@@ -1,14 +1,12 @@
 // Node Modules
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { FiLock } from "react-icons/fi";
 import jwt from "jwt-simple";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 // Constants
-import { secretKey, users, media } from "../constants/API";
-
+import * as API from "../constants/API";
 
 // Images
 import avatar from "../assets/images/avatar.png";
@@ -25,31 +23,38 @@ class Register extends Component {
       user: {},
       avatarImage: avatar
     };
-    this.handleInput = this.handleInput.bind(this);
     this.register = this.register.bind(this);
+    this.uploadAvatar = this.uploadAvatar.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.inputValue = this.inputValue.bind(this);
   }
 
   async register(e) {
     e.preventDefault();
-    const data = jwt.encode(this.state.user, secretKey);
+    const {avatarFile} = this.state;
+    const body = new FormData();
+    body.append('data', jwt.encode(this.state.user, API.secretKey));
+    if(avatarFile !== undefined) {
+      body.append('avatar', avatarFile);
+    }
     const {dispatch, cookies} = this.props;
     try {
-      const registerRes = await axios.post(users, {data});
+      const registerRes = await axios.post(API.users, body);
       if(registerRes.status === 200){
         const authKey = registerRes.data.token;
         const headers = {Authorization: authKey};
-        const decodedAuth = jwt.decode(authKey, secretKey);        
+        const decodedAuth = jwt.decode(authKey, API.secretKey);        
         const id = decodedAuth.user_id;
-        const userRes = await axios.get(`${users}${id}`, {headers});
+        const userRes = await axios.get(`${API.users}${id}`, {headers});
         if(userRes.status === 200){
           const userStatus = {
-            ...jwt.decode(userRes.data.data, secretKey),
-            avatar: `${media}${userRes.data.avatar}`,
+            ...jwt.decode(userRes.data.data, API.secretKey),
+            avatar: `${API.media}${userRes.data.avatar}`,
             id: id,
             designerId: decodedAuth.designer_id,
             authKey 
           };     
-          if(userStatus.avatar === media) {
+          if(userStatus.avatar === API.media) {
             userStatus.avatar = avatar
           }     
           dispatch(user({...userStatus, isSignedIn: true}));
@@ -59,12 +64,11 @@ class Register extends Component {
           throw new Error(userRes.data.error);
         }
       } else {
-        console.log(registerRes);
-        throw new Error(registerRes.data.error);
+        throw new Error("کاربر در سیستم وجود دارد.");
       }
     } catch(error) {
       this.setState({user: {}})
-      alert(error);
+      alert(error.message);
     }
   }
 
@@ -86,7 +90,7 @@ class Register extends Component {
   }
 
   render() {
-    const {isSignedIn, username} = this.props.user;
+    const {isSignedIn} = this.props.user;
     const {redirect} = this.state;
     if(redirect || isSignedIn){
       return <Redirect to="/feed" />;
@@ -94,7 +98,6 @@ class Register extends Component {
       return(
         <div className="full-width-form-wrapper">
           <div className="register-form-wrapper">
-            {/* <div className="logo"><FiLock className="lock-icon" /></div> */}
             <div className="avatar">
               <img 
                 className="avatar-img"

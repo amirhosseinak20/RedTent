@@ -7,7 +7,7 @@ import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 // Constants
-import { secretKey, userSignin, users, media } from "../constants/API";
+import * as API from "../constants/API";
 
 // Images
 import avatar from "../assets/images/avatar.png";
@@ -29,40 +29,39 @@ class Signin extends Component {
 
   async signin(e) {
     e.preventDefault();
-    const data = jwt.encode(this.state.user, secretKey);
+    const data = jwt.encode(this.state.user, API.secretKey);
     const {dispatch, cookies} = this.props;
     try {
-      const signinRes = await axios.post(userSignin, {data});
+      const signinRes = await axios.post(API.signin, {data});
       if(signinRes.status === 200){
         const authKey = signinRes.data.token;
         const headers = {Authorization: authKey};
-        const decodedAuth = jwt.decode(authKey, secretKey);        
+        const decodedAuth = jwt.decode(authKey, API.secretKey);        
         const id = decodedAuth.user_id;
-        const userRes = await axios.get(`${users}${id}`, {headers});
+        const userRes = await axios.get(`${API.users}${id}`, {headers});
         if(userRes.status === 200){
           const userStatus = {
-            ...jwt.decode(userRes.data.data, secretKey),
-            avatar: `${media}${userRes.data.avatar}`,
+            ...jwt.decode(userRes.data.data, API.secretKey),
+            avatar: `${API.media}${userRes.data.avatar}`,
             id: id,
             designerId: decodedAuth.designer_id,
             authKey
           };
-          if(userStatus.avatar === media) {
+          if(userStatus.avatar === API.media) {
             userStatus.avatar = avatar
           }
           dispatch(user({...userStatus, isSignedIn: true}));
           cookies.set('user', userStatus, {path: '/'});
           this.setState({redirect: true});
         } else {
-          throw new Error(userRes);
+          throw new Error('نام کاربری یا کلمه‌ی عبور اشتباه است.');
         }
       } else {
-        throw new Error(signinRes);
+          throw new Error('نام کاربری یا کلمه‌ی عبور اشتباه است.');
       }
     } catch(error) {
       this.setState({user: {}})
-      const message = error.response.data.error;
-      alert(message);
+      alert(error.message);
     }
   }
 
@@ -75,7 +74,7 @@ class Signin extends Component {
   }
 
   render() {
-    const {isSignedIn, username} = this.props.user;
+    const {isSignedIn} = this.props.user;
     const {redirect} = this.state;
     if(redirect || isSignedIn){
       return <Redirect to="/feed" />;

@@ -3,9 +3,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
+import axios from "axios";
 
-// Images
-import test from "../assets/images/test.jpg";
+// Helpers
+import { getUnique } from "../helpers/index";
+
+// Constans
+import * as API from "../constants/API";
 
 // Components
 // FIX this component
@@ -15,21 +19,50 @@ class Search extends Component {
     super(props);
     this.state = {
       images: [],
-      openSearch: false
+      openSearch: false,
+      search: ""
     }
+    this.fetchSearchRoot = this.fetchSearchRoot.bind(this);
     this.eachImage = this.eachImage.bind(this);
     this.openSearch = this.openSearch.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.search = this.search.bind(this);
   }
 
+  async componentWillMount() {
+    await this.fetchSearchRoot(10);
+  }
+
+  async fetchSearchRoot(n) {
+    try {
+      const params = {
+        _from: 0,
+        _row: n
+      }
+      const latest = await axios.get(API.latestDesigns, params);
+      const popular = await axios.get(API.popularDesigns, params);
+      const mostViewd = await axios.get(API.mostVisitedDesigns, params);
+      if(latest.status === 500){
+        throw new Error(latest.data.error);
+      } else if(popular.status === 500) {
+        throw new Error(popular.data.error);
+      } else if(mostViewd.status === 500) {
+        throw new Error(mostViewd.data.error);
+      }
+      const uniq = getUnique([...latest.data, ...popular.data, ...mostViewd.data]);
+      this.setState({images: uniq});
+    } catch (error) {
+      alert(error);
+    }
+  }
+
   eachImage(image, i){
     return(
       <Link className="link" to={`/designs/${image.id}`}>
         <img
-          src={image.src}
-          alt={image.alt}
-          key={image.id}
+          src={`${API.media}${image.picture}`}
+          alt={image.picture}
+          key={i}
         />
       </Link>
     )
@@ -43,8 +76,25 @@ class Search extends Component {
     this.setState({[name]: e.target.value});
   }
 
-  search(e) {
+  async search(e) {
     e.preventDefault();
+    try {
+      const {search} = this.state;
+      const params = {
+        _tag: search,
+        _from: 0,
+        _row: 100
+      };
+      const searchResponse = await axios.get(API.designs, {params});
+      console.log(searchResponse);
+      if(searchResponse.status === 204){
+        throw new Error("گشتم نبود، نگرد نیست!");
+      }
+      this.setState({images: searchResponse.data});
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+    }
   }
 
   render() {
