@@ -1,7 +1,7 @@
 export const baseURL = 'http://localhost:3005/';
 export const designers = `${baseURL}designers/`;
 
-export const base = 'http://192.168.68.139/';
+export const base = 'http://localhost:3005/';
 export const designs =`${base}designs/`;
 export const latestDesigns = `${designs}?_order_by=upload_date`;
 export const popularDesigns = `${designs}?_order_by=total_rate`;

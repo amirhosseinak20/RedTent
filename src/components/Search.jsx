@@ -30,7 +30,7 @@ class Search extends Component {
   }
 
   async componentWillMount() {
-    await this.fetchSearchRoot(10);
+    await this.fetchSearchRoot(100);
   }
 
   async fetchSearchRoot(n) {

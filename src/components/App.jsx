@@ -1,7 +1,7 @@
 // Node Modules
 import React, { Component } from "react";
 import { withCookies } from "react-cookie";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route} from "react-router-dom";
 import { connect } from "react-redux";
 
 // Actions
@@ -19,6 +19,7 @@ import Designer from "./Designer";
 import Feed from "./Feed";
 import Design from "./Design";
 import Search from "./Search";
+import UserEdit from "./UserEdit";
 
 class App extends Component {
   constructor(props) {
@@ -46,15 +47,19 @@ class App extends Component {
           />
           <Route 
             path="/users/register" 
-            render={({match}) => <Register cookies={cookies}match={match} />} 
+            render={({match}) => <Register cookies={cookies} match={match} />} 
+          />
+          <Route exact
+            path="/users/:username" 
+            render={({match}) => <User cookies={cookies} match={match} />} 
           />
           <Route
-            path="/users/:username" 
-            render={({match}) => <User cookies={cookies}match={match} />} 
+            path="/edit/:username" 
+            render={({match}) => <UserEdit cookies={cookies} match={match} />} 
           />
           <Route 
             path="/designers/:designerId" 
-            render={({match}) => <Designer cookies={cookies}match={match} />} 
+            render={({match}) => <Designer cookies={cookies} match={match} />} 
           />
           <Route 
             path="/feed" 
@@ -66,7 +71,7 @@ class App extends Component {
           />
           <Route 
             path="/designs/:id" 
-            render={({match}) => <Design cookies={cookies}match={match} />} 
+            render={({match}) => <Design cookies={cookies} match={match} />} 
           />
           <Route component={ErrorPanel} />
         </Switch>
@@ -76,10 +81,8 @@ class App extends Component {
 }
 
 function ErrorPanel(props) {
-  const {match} = props;
-  if(match.url === "/") {
-    return <Redirect to="/search" />
-  } else {
+  // const {match} = props;
+
     return(
       <div className="error-wrapper">
         <div className="error-logo-wrapper"><img src={logo} alt="logo" /></div>
@@ -87,6 +90,6 @@ function ErrorPanel(props) {
         <span className="error">صفحه‌ی مورد‌نظر یافت‌ نشد. </span>
       </div>
     );
-  }
+
 }
 export default withCookies(connect()(App));

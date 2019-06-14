@@ -11,7 +11,7 @@ import jwt from "jwt-simple";
 import wallpaper from "../assets/images/wallpaper.jpg";
 
 // Constatns 
-import { users, secretKey, media, designs } from "../constants/API";
+import { users, secretKey, media, designs, designsCollection } from "../constants/API";
 
 //Components
 class User extends Component {
@@ -82,7 +82,7 @@ function UserHeader({username, firstname, lastname, avatar, kind, match, designe
         <ul className="user-info">
           <li className="full-name">{`${firstname} ${lastname}`}</li>
           <li className="username">@{username}</li>
-          <li className="edit"><Link to={`${match.url}/edit`}><FiEdit3 /></Link></li>
+          <li className="edit"><Link to={`/edit/${username}`}><FiEdit3 /></Link></li>
           {kind === "designer" ? <li className="needl"><Link to={`/designers/${designerId}`}><GiSewingNeedle /></Link></li> : null}
         </ul>
       </div>
@@ -200,22 +200,25 @@ class UserCollection extends Component {
     const {open} = this.state
     this.setState({open: !open, images: []});
     if(!open) {
-      const id = jwt.decode(user.authKey, secretKey).user_id;
-      const config = {
-        headers: {Authorization: user.authKey}
-      };
       try {
         // Fix this line
-        const likedsRes = await axios.get(`${users}${id}/rates_for_designs/`, config);
+        const headers = {Authorization: user.authKey};
+        const params = {
+          _from: 0,
+          _row: 100
+        }
+        const designsCollectionRes = await axios.get(designsCollection, {headers});
+        this.setState({designsCollection: designsCollectionRes.data});
+        const dscId = this.state.designsCollection[0].id;
+        const col = await axios.get(`${designsCollection}${dscId}/designs/`, {headers, params});
         const images = [];
-        for(let i = 0; i < likedsRes.data.designs.length; i++){
-          const imageId = likedsRes.data.designs[i];
+        for(let i = 0; i < col.data.length; i++){
+          const imageId = col.data[i].id;
           images.push((await axios.get(`${designs}${imageId}`)).data);
         }
         this.setState({images: images});
       } catch(error) {
-        console.log(error);
-        // pass
+        alert(error);
       }
     }
   }

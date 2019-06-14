@@ -32,7 +32,7 @@ class Feed extends Component {
 
   // Fetch Images from Server and fix variables
   async componentWillMount() {
-    await this.fetchFeed(10);
+    await this.fetchFeed(100);
   }
 
   async fetchFeed(n) {
@@ -52,7 +52,6 @@ class Feed extends Component {
           {params, headers}
         );
         const designsCollection = await axios.get(API.designsCollection, {headers});
-        console.log(designsCollection);
         this.setState({designsCollection: designsCollection.data});
         if(latest.status === 500){
           throw new Error(latest.data.error);
@@ -107,6 +106,7 @@ class Image extends Component {
     super(props);
     this.state = {
     }
+    this.handler = this.handler.bind(this);
   }
 
   async componentWillMount() {
@@ -118,16 +118,24 @@ class Image extends Component {
         `${API.designs}${id}/get_my_rate/`, 
         {headers}
       );
-      const image = {
+      let image = {
         id: design.data.id,
         src: `${API.media}${design.data.design_picture}`,
         avg: design.data.rate,
         rate: userDeisgnRate.data
       }
+      image = {
+        ...image,
+        rate: image.rate.rate
+      }
       this.setState({...image});
     } catch (error) {
       alert(error);
     }
+  }
+
+  handler(someValue) {
+    this.setState(someValue);
   }
 
   render() {
@@ -139,9 +147,19 @@ class Image extends Component {
           <img src={src} alt={src} />
         </Link>
         <Share href={src}/>
-        <Add2Collection user={user} dId={id} dscId={designsCollection[0].id}/>
+        <Add2Collection 
+          user={user} 
+          dId={id} 
+          dscId={designsCollection[0].id}
+        />
         <div className="function-buttons-wrapper">
-          <Like avg={avg} rate={rate}/>
+          <Like 
+            avg={avg} 
+            rate={rate} 
+            id={id} 
+            user={user}
+            handler={this.handler}
+          />
           <div className="nd-wrapper">
             <Download href={src}/>
             {user.kind === "designer" ? <Needle /> : null}
@@ -195,16 +213,66 @@ class Add2Collection extends Component {
 // FIX this component
 // add functionality
 class Like extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    }
+    this.like = this.like.bind(this);
+    this.eachHeart = this.eachHeart.bind(this);
+  }
+
+  async like(e, n) {
+    e.preventDefault();
+    const {id, user, handler} = this.props;
+    try {
+      const headers = {Authorization: user.authKey};
+      const body = {
+        rate: n
+      }
+      const like = await axios.post(
+        `${API.designs}${id}/rates_for_design/`,
+        body, 
+        {headers}
+      );
+      this.setState({...like.data});
+      handler({...this.state});
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  eachHeart(i) {
+    const {avg, rate} = this.props;
+    let r, a, style;
+    parseFloat(avg) === 0 ? a = false : a = true;
+    style = {
+      fill: a && i >= avg ? '#FFCCCC' : '#FFFFFF'
+    }
+    parseInt(rate) === 0 ? r = false : r = true;
+    style = {
+      fill: r && i <= rate ? 'red' : '#FFFFFF'
+    }
+    return (
+      <FiHeart
+        id={i}
+        style={style}
+        className="heart"
+        onClick={e => this.like(e, i)}
+      />
+    );
+  }
+
   render() {
-    const {avg} = this.props;
+    let {avg} = this.props;
+    console.log(this.props);
+    let hearts = [];
+    for(let i = 1; i < 6; i++)
+      hearts.push(this.eachHeart(i));
     return(
       <div className="like">
-        <FiHeart className="heart" />
-        <FiHeart className="heart" />
-        <FiHeart className="heart" />
-        <FiHeart className="heart" />
-        <FiHeart className="heart" />
-        <span className="avg-rate">{parseFloat(avg)}</span>
+        {hearts}
+        <span className="avg-rate">{parseFloat(avg).toFixed(2)}</span>
       </div>
     );
   }
